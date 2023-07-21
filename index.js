@@ -1,53 +1,51 @@
-// importando con ESModules modulo fs que nos da node.js
-const fs = require("fs");
+// Aquí va la lógica (las acciones del diagrama de flujo y las condiciones)
+
+// importando con CommonJS modulos que nos da node.js
+const fs = require("fs", "fs/promises");
 const path = require("path");
+const functions = require('./functions.js')
 
-// cómo sé qué ruta se le está pasando?
-// R: se pasa la ruta por la terminal
 
-// ------------ ingreso de ruta ------------
-// comando: node index.js readme.md (su output son los argumentos que se le pasan-> 
-// en este caso, sería ingresar a readme.md) (?)
-// "This property returns an array containing the arguments passed to the process when 
-// run it in the command line. The first element is the process execution path 
-// and the second element is the path for the js file."
-// para obtener los argumentos que le pasemos por node.js
-const filePath = process.argv[2];
-// console.log(path);
 
-// ------------ ¿existe la ruta? ------------
-// verificando si un archivo existe asincrónamente 
-// revisar si existe otro método que sea case sensitive 
-const fileExists = fs.existsSync(filePath);
-//console.log(fs.existsSync(path));
-// mensaje error, si no encuentra la ruta
-if (fileExists === false) {
-    console.log("Error: path not found")
-} else {
-    // ------------ ¿la ruta es absoluta? ------------
-    // método de node para verifica si la ruta es absoluta
-    if (path.isAbsolute(filePath) === false) {
-        // console.log(path.isAbsolute(filePath));
-        // método de node (resolve) para convertir la ruta a absoluta
-        console.log(path.resolve(filePath));
+function mdLinks(filePath) {
+    // ------------ ingreso de ruta ------------
+    // comando para obtener los argumentos que pasemos por node.js
+
+    // console.log(path);
+    // ------------ ¿existe la ruta? ------------
+    // verificando si un archivo existe asincrónamente 
+    const fileExists = functions.fileExists(filePath); // no es case sensitive
+    //console.log(fs.existsSync(path));
+    // mensaje error, si no encuentra la ruta
+    if (!fileExists) {
+        console.log("Error: path not found")
     } else {
-        console.log("The route was already absolute");
+        // ------------ ¿la ruta es absoluta? ------------
+        // método de node para verificar si la ruta es absoluta
+        if (!path.isAbsolute(filePath)) {
+            // console.log(path.isAbsolute(filePath));
+            // -------- Convertir la ruta a absoluta ------------
+            console.log(path.resolve(filePath));
+        } else {
+            console.log("The route was already absolute");
+        }
     }
+    // ------------ ¿la ruta es un archivo? ------------
+    // Verificando si la ruta es un archivo
+    //const fileIsPath = fs.readFile()
+
+
 }
-// esto debe devolver un boolean para saber si es relativa o absoluta
 
-// -------------------------------------------------------------------------------------------------------------------------------------------------------------
+module.exports = {
+    mdLinks
+}
 
-// ------------------------ LA FUNCIÓN ------------------------
-// lo mismo de arriba pero dentro de una función!
-// const mdLinks = () => {
-//     // Obtener la ruta
-//     const relativePath = process.argv[2];
-//     // Verificar si la ruta es absoluta
-//     if (!path.isAbsolute(relativePath)) {
-//         // !path.isAbsolute está negando el método, pq queremos que ejecute 'false', si quisieramos que ejecutara 'true' le quitariamos este signo '!'
-//         // Convertir la ruta a absoluta
-//         const absolutePath = path.resolve(relativePath);
-//     }
-// };
-// mdLinks();
+// notes
+// * "In Node.js, file handling is handled by the fs module."
+// un callback es lo que se ejecuta después de completada la función
+// la función se debe completar antes del callback
+// un callback se ejecuta después de que la primera función se haya ejecutado
+// se usa para lo asíncrono
+
+// 
