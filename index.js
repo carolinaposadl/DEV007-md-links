@@ -1,17 +1,11 @@
 // Aquí va la lógica (las acciones del diagrama de flujo y las condiciones)
 
 // importando con CommonJS modulos que nos da node.js
-const fs = require("fs", "fs/promises");
+// const fs = require("fs", "fs/promises");
 const path = require("path");
 const functions = require('./functions.js')
 
-
-
 function mdLinks(filePath) {
-    // ------------ ingreso de ruta ------------
-    // comando para obtener los argumentos que pasemos por node.js
-
-    // console.log(path);
     // ------------ ¿existe la ruta? ------------
     // verificando si un archivo existe asincrónamente 
     const fileExists = functions.fileExists(filePath); // no es case sensitive
@@ -32,8 +26,14 @@ function mdLinks(filePath) {
     }
     // ------------ ¿la ruta es un archivo? ------------
     // Verificando si la ruta es un archivo
-    //const fileIsPath = fs.readFile()
-
+    const fileIsPath = functions.fileIsPath(filePath);
+    if (fileIsPath) {
+        console.log('is file ? ' + stats.isFile()); // TAREA: definir callback
+    } else {
+        const fileIsDirectory = functions.fileIsDirectory(filePath);
+        // Verificando si la ruta es un directorio
+        console.log('is directory ? ' + stats.isDirectory());
+    }
 
 }
 
@@ -48,4 +48,4 @@ module.exports = {
 // un callback se ejecuta después de que la primera función se haya ejecutado
 // se usa para lo asíncrono
 
-// 
+// usar try-catch para cachar los errores en caso de que no se encuentre un archivo o no se encuentre links en ellos o no sea md, etc...
