@@ -1,39 +1,50 @@
-// Aquí va la lógica (las acciones del diagrama de flujo y las condiciones)
+// Aquí va la lógica del proyecto
 
-// importando con CommonJS modulos que nos da node.js
-// const fs = require("fs", "fs/promises");
-const path = require("path");
+// Importando con CommonJS modulos de node.js
+const fs = require('fs', 'fs/promises');
+const path = require('path');
 const functions = require('./functions.js')
 
-function mdLinks(filePath) {
+function mdLinks(givenPath) {
     // ------------ ¿existe la ruta? ------------
     // verificando si un archivo existe asincrónamente 
-    const fileExists = functions.fileExists(filePath); // no es case sensitive
+    const fileExists = functions.fileExists(givenPath); // no es case sensitive
     //console.log(fs.existsSync(path));
     // mensaje error, si no encuentra la ruta
     if (!fileExists) {
-        console.log("Error: path not found")
+        console.log("Error: path not found.")
     } else {
         // ------------ ¿la ruta es absoluta? ------------
         // método de node para verificar si la ruta es absoluta
-        if (!path.isAbsolute(filePath)) {
+        if (!path.isAbsolute(givenPath)) {
             // console.log(path.isAbsolute(filePath));
             // -------- Convertir la ruta a absoluta ------------
-            console.log(path.resolve(filePath));
+            console.log(path.resolve(givenPath));
         } else {
-            console.log("The route was already absolute");
+            console.log("the route was already absolute.");
         }
     }
-    // ------------ ¿la ruta es un archivo? ------------
-    // Verificando si la ruta es un archivo
-    const fileIsPath = functions.fileIsPath(filePath);
-    if (fileIsPath) {
-        console.log('is file ? ' + stats.isFile()); // TAREA: definir callback
-    } else {
-        const fileIsDirectory = functions.fileIsDirectory(filePath);
-        // Verificando si la ruta es un directorio
-        console.log('is directory ? ' + stats.isDirectory());
+    // ------------ ¿la ruta es un archivo o es un directorio? ------------
+    const checkPathType = functions.checkPathType(givenPath);
+    try {
+        if (checkPathType.isFile()) {
+            console.log(`${givenPath} is a file.`);
+        } else if (checkPathType.isDirectory()) {
+            console.log(`${givenPath} is a directory.`);
+        } else {
+            console.log(`${givenPath} is neither a file nor a directory.`);
+        }
+    } catch (error) {
+        console.log('Error: path must contain files or directories'); // tal vez esto vaya en "leer directorios"?
     }
+    // ------------ Leer archivos y directorios ------------
+    const readThisFile = functions.readThisFile(givenPath);
+    const readDirSynchronously = functions.readDirSynchronously(givenPath);
+
+
+
+    // ------------ ¿Es un archivo .md? ------------
+
 
 }
 

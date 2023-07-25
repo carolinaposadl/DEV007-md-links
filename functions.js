@@ -1,40 +1,36 @@
-// Aquí van las funciones que se encargan de verificar las acciones 
-// Exportamos estas funciones a la lógica del proyecto (index.js)
+// Aquí van las funciones que se encargan de verificar las acciones
 
-// importando métodos del módulo fs
+// Importando métodos del módulo fs
 const fs = require('fs', 'fs/promises');
-const path = require("path");
+// const path = require("path");
 
 // Función para verificar si existe la ruta
-const fileExists = function (filePath) {
-    return fs.existsSync(filePath);
+const fileExists = function (givenPath) {
+    return fs.existsSync(givenPath);
+}
+// Función para verificar si la ruta es un archivo o un directorio
+const checkPathType = function (givenPath) {
+    return fs.statSync(givenPath);
 }
 
-// Función para verificar si la ruta es un archivo asíncrono
-const fileIsPath = function (filePath) {
-    return fs.stat(filePath, (err, stats)); // callback
+// Función para leer archivos de forma asíncrona 
+const readThisFile = function (givenPath) {
+    return fs.readFile(givenPath).then;
 }
 
-// Función para verificar si la ruta es un directorio síncrono
-const fileIsDirectory = function (filePath) {
-    // El método statSync() para guardar lo retornado
-    return fs.statSync(filePath);
+// Función para leer directorios de forma síncrona
+const readDirSynchronously = function (givenPath) {
+    return fs.readDirSync(givenPath)
 }
 
-// Función para leer el contenido de un archivo de forma asíncrona
-const readThisFile = function (filePath) {
-    return fs.readFile().then;
-}
+// Función para leer la extensión de los archivos
 
-// Función para leer el contenido de directorios de forma síncrona
-const readFileSynchronously = function (filePath) {
-    return readFileSync(path)
-}
 
+
+// Exportando funciones a la lógica del proyecto (index.js)
 module.exports = {
     fileExists,
-    fileIsPath,
-    fileIsDirectory,
+    checkPathType,
     readThisFile,
-    readFileSynchronously,
+    readDirSynchronously,
 }
