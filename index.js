@@ -38,8 +38,8 @@ function mdLinks(givenPath) {
         console.log('Error: path must contain files or directories'); // tal vez esto vaya en "leer directorios"?
     }
     // ------------ Leer archivos y directorios ------------
-    const readThisFile = functions.readThisFile(givenPath);
-    const readDirSynchronously = functions.readDirSynchronously(givenPath);
+    // const readThisFile = functions.readThisFile(givenPath);
+    // const readDirSynchronously = functions.readDirSynchronously(givenPath);
 
 
 

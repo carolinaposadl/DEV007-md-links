@@ -1,7 +1,8 @@
 // Aquí van las funciones que se encargan de verificar las acciones
 
-// Importando métodos del módulo fs
-const fs = require('fs', 'fs/promises');
+// Importando módulo fs
+const fs = require('fs');
+const fsPromises = require('fs').promises;
 // const path = require("path");
 
 // Función para verificar si existe la ruta
@@ -14,14 +15,24 @@ const checkPathType = function (givenPath) {
 }
 
 // Función para leer archivos de forma asíncrona 
+// fsPromises.readFile() para leer el archivo
 const readThisFile = function (givenPath) {
-    return fs.readFile(givenPath).then;
+    return fs.promises.readFile(givenPath, 'utf8')
+        .then((data) => {
+            console.log("Data read from the file:", data);
+            return data;
+        })
+        .catch((err) => {
+            console.error("Got an error while reading the file:", err);
+            throw err;
+        })
+
 }
 
 // Función para leer directorios de forma síncrona
-const readDirSynchronously = function (givenPath) {
-    return fs.readDirSync(givenPath)
-}
+// const readDirSynchronously = function (givenPath) {
+//     return fs.readDirSync(givenPath)
+// }
 
 // Función para leer la extensión de los archivos
 
@@ -32,5 +43,5 @@ module.exports = {
     fileExists,
     checkPathType,
     readThisFile,
-    readDirSynchronously,
+    // readDirSynchronously,
 }
