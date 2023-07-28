@@ -24,7 +24,9 @@ function mdLinks(givenPath) {
             console.log("the route was already absolute.");
         }
     }
+
     // ------------ ¿la ruta es un archivo o es un directorio? ------------
+    // isFile() & isDirectory() son métodos del módulo fs
     const checkPathType = functions.checkPathType(givenPath);
     try {
         if (checkPathType.isFile()) {
@@ -35,12 +37,94 @@ function mdLinks(givenPath) {
             console.log(`${givenPath} is neither a file nor a directory.`);
         }
     } catch (error) {
-        console.log('Error: path must contain files or directories'); // tal vez esto vaya en "leer directorios"?
+        console.log('Error: path must contain files or directories');
     }
+
+
+    // ------------ ¿Es un archivo .md? ------------
+    const checkExtension = functions.checkExtension(givenPath);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ------------ ¿Es un archivo .md? ------------
+
+
+        // saber si la ruta es un archivo
+        .then(stats => {
+        if (checkPathType.isFile()) {
+            if (checkExtension(givenPath) === '.md') {
+                console.log(`File: ${givenPath} is a markdown file.`);
+            } else {
+                console.log(`File: ${givenPath} is not a markdown file.`);
+            }
+        }
+
+        // saber si la ruta es un directorio
+        else if (checkPathType.isDirectory()) {
+            fs.readdir(givenPath).then(files => {
+                files.forEach(file => {
+                    const filePath = path.join(givenPath, file);
+                    if (checkExtension(givenPath) === '.md') {
+                        console.log(`File: ${filePath} is a markdown file.`);
+                    } else {
+                        console.log(`File: ${filePath} is not a markdown file.`);
+                    }
+                });
+            })
+        }
+    })
+    // .catch (error => {
+    //         console.log('Error: path must contain files or directories.');
+    //     });
+
+    checkExtension('./some-directory-or-file-path');
+
+
+
+
+
+
+
+
     // ------------ Leer archivos y directorios ------------
     // const readThisFile = functions.readThisFile(givenPath);
+    // ya lee lo que hay dentro del archivo, pero la lógica debería estar implementada acá
+
+
+
+
+
     // const readDirSynchronously = functions.readDirSynchronously(givenPath);
 
+
+
+
+
+
+
+
+
+
+
+    // pathsArray.forEach(filePath => {
+    //     if (path.extname(filePath) == ".md") {
+    //         console.log(filePath);
+    //     } else if (!path.extname(filePath) == ".md") {
+    //         console.log("Error: path must contain .md files.")
+    //     }
+    // });
 
 
     // ------------ ¿Es un archivo .md? ------------
