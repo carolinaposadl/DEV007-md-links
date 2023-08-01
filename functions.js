@@ -9,17 +9,15 @@ const path = require('path');
 const fileExists = function (givenPath) {
     return fs.existsSync(givenPath);
 };
-// Función para verificar si la ruta es un archivo o un directorio, debe retornar una promesa
+
+// Función para verificar si la ruta es un archivo o un directorio
 const checkPathType = function (givenPath) {
-    return new Promise((resolve, reject) => {
-        fs.stat(givenPath, (err, stats) => {
-            if (err) {
-                reject('Error: path must contain files or directories');
-            } else {
-                resolve(stats);
-            }
-        });
-    });
+    try {
+        return fs.statSync(givenPath);
+    } catch (error) {
+        console.log('Error: path is neither a file nor a directory');
+        return null;
+    }
 };
 
 // Función para leer la extensión de los archivos
@@ -28,32 +26,27 @@ const checkExtension = function (givenPath) {
 }
 
 // Función para leer directorios
-function readMdFiles(dirPath) {
-    return new Promise((resolve, reject) => {
-        fs.readdir(dirPath, (err, files) => {
-            if (err) {
-                reject(err);
-            } else {
-                const mdFiles = files.filter(file => path.extname(file) === '.md');
-                resolve(mdFiles);
-            }
-        });
-    });
-}
-readMdFiles('./example-directory')
-    .then(mdFiles => {
-        console.log(mdFiles); // this will log an array of filenames with the ".md" extension
-    })
-    .catch(err => {
-        console.error(err);
-    });
+const readDirectory = function (givenPath) {
+    try {
+        return fs.readdirSync(givenPath);
+    } catch (error) {
+        console.log('Error: Unable to read directory');
+        return null;
+    }
+};
+
+// Función para leer archivos
+// const readFiles = function (givenPath) {
+//     return fs.readFile(givenPath, 'utf8', function (err, data) {
+//         if (err) {
+//             console.error(`Error reading file`);
+//         } else {
+//             process(data);
+//         }
+//     })
+// }
 
 
-
-
-
-// --------------------ME ADELANTÉ!!!!! <<para leer el contenido de los archivos>>--------------
-// Función para leer archivos  
 
 // fsPromises.readFile() para leer el archivo
 // const readThisFile = function (givenPath) {
@@ -77,8 +70,8 @@ module.exports = {
     fileExists,
     checkPathType,
     checkExtension,
-    // readDirectories,
-    // readThisFile,
+    readDirectory,
+    readFiles,
 
 }
 

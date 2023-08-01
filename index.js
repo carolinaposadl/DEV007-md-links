@@ -3,7 +3,7 @@
 // Importando con CommonJS modulos de node.js
 const fs = require('fs', 'fs/promises');
 const path = require('path');
-const { checkPathType, checkExtension } = require('./functions.js');
+// const { checkPathType, checkExtension } = require('./functions.js');
 
 const functions = require('./functions.js')
 
@@ -24,66 +24,53 @@ function mdLinks(givenPath) {
     }
 
     // ------------ ¿la ruta es un archivo o es un directorio? ------------
-    // ------------ Si es un archivo ¿es .md? ------------
     // isFile() & isDirectory() son métodos del módulo fs
-    functions.checkPathType(givenPath)
-        .then(checkPathType => {
-            if (checkPathType.isFile()) {
-                console.log(`${givenPath} is a file.`);
-                if (checkExtension(givenPath) === '.md') {
-                    console.log(`File: ${givenPath} is a markdown file.`);
-                } else {
-                    console.log(`File: ${givenPath} is not a markdown file.`);
-                }
-            } else if (checkPathType.isDirectory()) {
-                console.log(`${givenPath} is a directory.`);
+    const checkPathType = functions.checkPathType(givenPath);
+    if (checkPathType) {
+        if (checkPathType.isFile()) {
+            console.log(`${givenPath} is a file.`);
+        } else if (checkPathType.isDirectory()) {
+            console.log(`${givenPath} is a directory.`);
 
-                // if 
-            } else {
-                console.log(`${givenPath} is neither a file nor a directory.`);
+        } else {
+            console.log(`${givenPath} is neither a file nor a directory.`);
+        }
+    }
+
+    // ------------ ¿Es un archivo .md? ------------
+    const extension = functions.checkExtension(givenPath);
+    if (extension) {
+        if (extension === '.md') {
+            console.log(`File: ${givenPath} is a markdown file.`);
+        } else {
+            console.log(`File: ${givenPath} is not a markdown file.`);
+        }
+    }
+
+    // ------------ leer directorios ------------
+    const files = functions.readDirectory(givenPath);
+    if (files) {
+        files.forEach(file => {
+            if (functions.checkExtension(file) === '.md') {
+                console.log(file);
             }
-        })
-        .catch(error => {
-            console.log(error);
         });
-
+    } else {
+        console.log('Error: no files');
+    }
 
     // ------------ Leer archivos ------------
-    // const readThisFile = functions.readThisFile(givenPath);
-    // ya lee lo que hay dentro del archivo, pero la lógica debería estar implementada acá
+    // const readFiles = functions.readFiles(givenPath);
+    // function processFile(content) {
+    //     const urlRegex = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/g;
+    //     const urls = content.match(urlRegex);
+    //     console.log(urls);
+    // }
 
-    // Leer directorios
-
-
-
-
-
-    // traer la función
-    // en una constante guardar la importación de la función, esa es la constante que se recorrerá
-    // crear el ciclo forEach que filtre los archivos .md
-
-    // leer el directorio (NUEVO!!!!)
-    // verificar si tiene archivos (solo verificar) --- si no tiene ERROR (NUEVO!!!!)
-    // escoger los archivos .md (checkExtension)
-    // agregar esos archivos a un array (NUEVO!!!!)
-    // leer cada archivo (readFile)
-    // crear condición de recursividad
-
-
-
-    // pathsArray.forEach(filePath => {
-    //     if (path.extname(filePath) == ".md") {
-    //         console.log(filePath);
-    //     } else if (!path.extname(filePath) == ".md") {
-    //         console.log("Error: path must contain .md files.")
-    //     }
-    // });
-
-
+    // readFile('test.md');
 
 
 }
-
 module.exports = {
     mdLinks
 }
@@ -95,4 +82,4 @@ module.exports = {
 // un callback se ejecuta después de que la primera función se haya ejecutado
 // se usa para lo asíncrono
 
-// usar try-catch para cachar los errores en caso de que no se encuentre un archivo o no se encuentre links en ellos o no sea md, etc...
+// usar try-catch para cachar los errores en caso de que no se encuentre un archivo o no se encuentre links en ellos o no sea md, etc
