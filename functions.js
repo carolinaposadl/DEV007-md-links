@@ -15,7 +15,7 @@ const checkPathType = function (givenPath) {
     try {
         return fs.statSync(givenPath);
     } catch (error) {
-        console.log('Error: path is neither a file nor a directory');
+        console.log('Error: path is neither a file nor a directory.');
         return null;
     }
 };
@@ -36,32 +36,23 @@ const readDirectory = function (givenPath) {
 };
 
 // Función para leer archivos
-// const readFiles = function (givenPath) {
-//     return fs.readFile(givenPath, 'utf8', function (err, data) {
-//         if (err) {
-//             console.error(`Error reading file`);
-//         } else {
-//             process(data);
-//         }
-//     })
-// }
+const readFilesFromDirectory = function (givenPath) {
+    return fs.readFile(givenPath, 'utf8', function (err, data) {
+        if (err) {
+            console.error(`Error reading file`);
+        } else {
+            readFiles(data);
+        }
+    })
+}
 
 
 
-// fsPromises.readFile() para leer el archivo
-// const readThisFile = function (givenPath) {
-//     return fs.promises.readFile(givenPath, 'utf8')
-//         .then((data) => {
-//             console.log("Data read from the file:", data);
-//             return data;
-//         })
-//         .catch((err) => {
-//             console.error("Got an error while reading the file:", err);
-//             throw err;
-//         })
-// }
+
+
 
 // Función para extraer los links
+
 
 
 
@@ -71,7 +62,6 @@ module.exports = {
     checkPathType,
     checkExtension,
     readDirectory,
-    readFiles,
+    readFilesFromDirectory,
 
 }
-
