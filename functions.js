@@ -1,8 +1,4 @@
-// Aquí van las funciones que se encargan de verificar las acciones
-
-// Importando módulo fs
 const fs = require('fs');
-// const fsPromises = require('fs').promises;
 const path = require('path');
 
 // Función para verificar si existe la ruta
@@ -11,57 +7,67 @@ const fileExists = function (givenPath) {
 };
 
 // Función para verificar si la ruta es un archivo o un directorio
-const checkPathType = function (givenPath) {
-    try {
-        return fs.statSync(givenPath);
-    } catch (error) {
-        console.log('Error: path is neither a file nor a directory.');
-        return null;
+const checkPathType = (givenPath) => {
+    if (fs.statSync(givenPath).isDirectory()) {
+        return 'directory';
+    } else if (fs.statSync(givenPath).isFile()) {
+        return 'file';
+    } else {
+        throw new Error('Path is not a file or directory');
     }
 };
 
-// Función para leer la extensión de los archivos
-const checkExtension = function (givenPath) {
-    return path.extname(givenPath);
-}
-
-// Función para leer directorios
-const readDirectory = function (givenPath) {
-    try {
-        return fs.readdirSync(givenPath);
-    } catch (error) {
-        console.log('Error: Unable to read directory');
-        return null;
-    }
+// Función para verificar si la ruta es un archivo .md
+const checkExtension = (givenPath) => {
+    return path.extname(givenPath) === '.md';
 };
 
-// Función para leer archivos
-const readFilesFromDirectory = function (givenPath) {
-    return fs.readFile(givenPath, 'utf8', function (err, data) {
-        if (err) {
-            console.error(`Error reading file`);
-        } else {
-            readFiles(data);
+const readDirectory = (dirPath) => {
+    let files = [];
+    const dirContent = fs.readdirSync(dirPath);
+
+    dirContent.forEach((dirItem) => {
+        const newDirPath = path.join(dirPath, dirItem);
+
+        if (checkPathType(newDirPath) === 'directory') {
+            files = files.concat(readDirectory(newDirPath));
+        } else if (checkExtension(newDirPath)) {
+            files.push(newDirPath);
         }
-    })
-}
+    });
+    return files;
+};
 
+// Función para leer archivos .md y extraer links
+const extractLinks = (givenPath) => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(givenPath, 'utf8', (err, fileContent) => {
+            if (err) {
+                reject(err);
+            } else {
+                const linksRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+                let match;
+                const links = [];
 
+                while ((match = linksRegex.exec(fileContent)) !== null) {
+                    links.push({
+                        href: match[2],
+                        text: match[1],
+                        file: filePath
+                    });
+                }
+                resolve(links);
+            }
+        });
+    });
+};
 
-
-
-
-// Función para extraer los links
-
-
-
-
-// Exportando funciones a la lógica del proyecto (index.js)
 module.exports = {
     fileExists,
     checkPathType,
     checkExtension,
     readDirectory,
-    readFilesFromDirectory,
+    extractLinks,
 
 }
+// Aquí van las funciones que se encargan de verificar las acciones
