@@ -1,9 +1,17 @@
 const fs = require('fs');
 const path = require('path');
 
-// Función para verificar si existe la ruta
-const fileExists = function (givenPath) {
-    return fs.existsSync(givenPath);
+// Función para verificar si existe la ruta y convertir de relativa a absoluta
+const checkPathAndConvert = (givenPath) => {
+    if (!fs.existsSync) {
+        console.log('Path not found.')
+    } else {
+        if (!path.isAbsolute(givenPath)) {
+            console.log(path.resolve(givenPath));
+        } else {
+            console.log('Path was already absolute.');
+        }
+    }
 };
 
 // Función para verificar si la ruta es un archivo o un directorio
@@ -13,7 +21,7 @@ const checkPathType = (givenPath) => {
     } else if (fs.statSync(givenPath).isFile()) {
         return 'file';
     } else {
-        throw new Error('Path is not a file or directory');
+        throw new Error('Path is not a file or directory.');
     }
 };
 
@@ -22,9 +30,11 @@ const checkExtension = (givenPath) => {
     return path.extname(givenPath) === '.md';
 };
 
+// Función para leer directorio y obtener archivos .md
 const readDirectory = (dirPath) => {
-    let files = [];
     const dirContent = fs.readdirSync(dirPath);
+
+    let files = []; // array al que se añaden los archivos
 
     dirContent.forEach((dirItem) => {
         const newDirPath = path.join(dirPath, dirItem);
@@ -39,7 +49,7 @@ const readDirectory = (dirPath) => {
 };
 
 // Función para leer archivos .md y extraer links
-const extractLinks = (givenPath) => {
+const extractLinks = (givenPath) => { // debería haber un "no links found" cuando no encuentre links
     return new Promise((resolve, reject) => {
         fs.readFile(givenPath, 'utf8', (err, fileContent) => {
             if (err) {
@@ -53,7 +63,7 @@ const extractLinks = (givenPath) => {
                     links.push({
                         href: match[2],
                         text: match[1],
-                        file: filePath
+                        file: givenPath
                     });
                 }
                 resolve(links);
@@ -63,11 +73,12 @@ const extractLinks = (givenPath) => {
 };
 
 module.exports = {
-    fileExists,
+    checkPathAndConvert,
     checkPathType,
     checkExtension,
     readDirectory,
     extractLinks,
-
 }
-// Aquí van las funciones que se encargan de verificar las acciones
+
+// En este archivo van las funciones que se encargan de verificar las acciones
+
