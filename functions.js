@@ -4,13 +4,11 @@ const path = require('path');
 // Función para verificar si existe la ruta y convertir de relativa a absoluta
 const checkPathAndConvert = (givenPath) => {
     if (!fs.existsSync) {
-        console.log('Path not found.')
+        throw new Error('Path does not exist.')
+    } else if (!path.isAbsolute(givenPath)) {
+        console.log(path.resolve(givenPath));
     } else {
-        if (!path.isAbsolute(givenPath)) {
-            console.log(path.resolve(givenPath));
-        } else {
-            console.log('Path was already absolute.');
-        }
+        console.log('Path was already absolute.');
     }
 };
 
@@ -21,7 +19,7 @@ const checkPathType = (givenPath) => {
     } else if (fs.statSync(givenPath).isFile()) {
         return 'file';
     } else {
-        throw new Error('Path is not a file or directory.');
+        throw new Error('Path is neither a file nor a directory.');
     }
 };
 
@@ -44,12 +42,15 @@ const readDirectory = (dirPath) => {
         } else if (checkExtension(newDirPath)) {
             files.push(newDirPath);
         }
+        // else if (files === 0) { // el error no funciona en caso de que no haya archivos dentro del dir
+        //     throw new Error('No files found');
+        // }
     });
     return files;
 };
 
 // Función para leer archivos .md y extraer links
-const extractLinks = (givenPath) => { // debería haber un "no links found" cuando no encuentre links
+const extractLinks = (givenPath) => {
     return new Promise((resolve, reject) => {
         fs.readFile(givenPath, 'utf8', (err, fileContent) => {
             if (err) {
@@ -67,6 +68,19 @@ const extractLinks = (givenPath) => { // debería haber un "no links found" cuan
                     });
                 }
                 resolve(links);
+
+                // // REJECT NO funciona en caso de que no hayan links en el archivo
+                // if (links != 0) {
+                //     resolve(links);
+                // } else if (links.length === 0) {
+                //     reject(new Error('No links found'));
+                // }
+
+                // if (links.length === 0) {
+                //     reject(new Error('No links found'));
+                // } else {
+                // resolve(links);
+                // }
             }
         });
     });
