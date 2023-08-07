@@ -1,8 +1,25 @@
 // Funciones cli (process, validate, statts)
-const mdLinks = require('./index')
+const { mdLinks } = require('./index');
 
-// ingreso de ruta
-// comando para obtener los argumentos que pasemos por node.js
-const filePath = process.argv[2];
+// process.argv -> para obtener los argumentos que pasemos por node.js
+// aquí consumo la promesa .then !!
+console.log(process.argv);
 
-mdLinks.mdLinks(filePath);
+// objeto vacío
+const optionsObject = {};
+
+if (process.argv[3] === '--validate' || process.argv[4] === '--validate') {
+    optionsObject.validate = true
+} else {
+    optionsObject.validate = false
+}
+
+mdLinks(process.argv[2], optionsObject)
+    .then((result) => {
+        console.log(result);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+
+
