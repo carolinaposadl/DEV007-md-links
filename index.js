@@ -3,10 +3,11 @@ const {
     checkPathType,
     checkExtension,
     readDirectory,
-    extractLinks
+    extractLinks,
+    validateLinks
 } = require('./functions.js');
 
-const mdLinks = (givenPath) => {
+const mdLinks = (givenPath, options) => {
     return new Promise((resolve, reject) => {
 
         // Verificar si la ruta existe y convertir de relativa a absoluta
@@ -49,6 +50,14 @@ const mdLinks = (givenPath) => {
             console.error(err.message);
         }
     });
+    if (options) {
+        validateLinks(links, filename).then(({ validLinks, brokenLinks }) => {
+            // aquí va stats?
+            resolve({ links: validLinks });
+        });
+    } else {
+        resolve({ links });
+    }
 };
 
 module.exports = {
@@ -59,4 +68,7 @@ module.exports = {
 
 // Notas
 // promise.all
-// Without Promise.all, the code would not wait for the promises to resolve, and the links would not be collected properly. By using Promise.all, we ensure that all the promises are resolved before executing the subsequent code.
+// Without Promise.all, the code would not wait for the promises to resolve, and the links would not be collected properly.
+// By using Promise.all, we ensure that all the promises are resolved before executing the subsequent code.
+
+

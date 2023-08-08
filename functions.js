@@ -87,12 +87,44 @@ const extractLinks = (givenPath) => {
     });
 };
 
+// --------- VALIDAR LINKS ---------
+// 1. crear una función para obtener asíncronamente las URL y validarlas.
+// *¿cuál es la diferencia entre URL y href?
+// 2. 
+const validateLinks = (links, filename) => {
+    let validLinks = []; // para contener links validos y separarlos
+    let brokenLinks = []; // para contener links rotos  y separarlos
+
+    return Promise.all(links.map(link => { // recorrer y crear nuevo array de links
+        return axios.get(link.href) // href representa el vínculo o enlace
+            .then(response => { // response "representa la respuesta a una petición" fetch API ?
+                validLinks.push({ // push añade los links al final del array, devuelve nueva longitud del array
+                    ...link, // agrega nuevos elementos al array y retorna nuevo array
+                    file: filename,
+                    status: response.status, // 200 por qué .status? como si ingresara al valor status
+                    ok: 'OK'
+                });
+            })
+            .catch(error => { // cachar brokenLinks que serían el "error"
+                brokenLinks.push({
+                    ...link, // estudiar si push y ... se complementan
+                    file: filename,
+                    status: error.response.status, // 404, interpreya por defecto que error es un 404 porque es href
+                    ok: 'FAIL'
+                });
+            });
+    }))
+        .then(() => ({ validLinks, brokenLinks })); // a qué corresponde esta sintaxis, que validLinks es un objeto?
+};
+
+
 module.exports = {
     checkPathAndConvert,
     checkPathType,
     checkExtension,
     readDirectory,
     extractLinks,
+    validateLinks
 }
 
 // En este archivo van las funciones que se encargan de verificar las acciones
