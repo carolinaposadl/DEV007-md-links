@@ -116,6 +116,25 @@ const extractLinks = (givenPath) => {
 //     }))
 //         .then(() => ({ validLinks, brokenLinks })); // a qué corresponde esta sintaxis, que validLinks es un objeto?
 // };
+const validateLinks = (link, filename) => {
+    return axios.get(link.href)
+        .then(response => {
+            return {
+                ...link,
+                file: filename,
+                status: response.status,
+                ok: 'OK'
+            };
+        })
+        .catch(error => {
+            return {
+                ...link,
+                file: filename,
+                status: error.response.status,
+                ok: 'FAIL'
+            };
+        });
+};
 
 
 module.exports = {
@@ -124,7 +143,7 @@ module.exports = {
     checkExtension,
     readDirectory,
     extractLinks,
-    // validateLinks
+    validateLinks
 }
 
 // En este archivo van las funciones que se encargan de verificar las acciones
