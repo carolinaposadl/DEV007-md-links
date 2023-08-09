@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const axios = require('axios');
+// const axios = require('axios');
 
 // Función para verificar si existe la ruta y convertir de relativa a absoluta
+// <<<<<< Mejorar manejo de errores >>>>>>>
 const checkPathAndConvert = (givenPath) => {
     if (!fs.existsSync) {
         throw new Error('Path does not exist.')
@@ -30,6 +31,7 @@ const checkExtension = (givenPath) => {
 };
 
 // Función para leer directorio y obtener archivos .md
+// <<<<<< Mejorar manejo de errores >>>>>>>
 const readDirectory = (dirPath) => {
     const dirContent = fs.readdirSync(dirPath);
 
@@ -51,6 +53,7 @@ const readDirectory = (dirPath) => {
 };
 
 // Función para leer archivos .md y extraer links
+// <<<<<< Mejorar manejo de errores >>>>>>>
 const extractLinks = (givenPath) => {
     return new Promise((resolve, reject) => {
         fs.readFile(givenPath, 'utf8', (err, fileContent) => {
@@ -69,28 +72,14 @@ const extractLinks = (givenPath) => {
                     });
                 }
                 resolve(links);
-
-                // // REJECT NO funciona en caso de que no hayan links en el archivo
-                // if (links != 0) {
-                //     resolve(links);
-                // } else if (links.length === 0) {
-                //     reject(new Error('No links found'));
-                // }
-
-                // if (links.length === 0) {
-                //     reject(new Error('No links found'));
-                // } else {
-                // resolve(links);
-                // }
             }
         });
     });
 };
 
-// --------- VALIDAR LINKS ---------
-// 1. crear una función para obtener asíncronamente las URL y validarlas.
-// *¿cuál es la diferencia entre URL y href?
-// 2. 
+// Función para validar links
+
+
 // const validateLinks = (links, filename) => {
 //     let validLinks = []; // para contener links validos y separarlos
 //     let brokenLinks = []; // para contener links rotos  y separarlos
@@ -116,25 +105,20 @@ const extractLinks = (givenPath) => {
 //     }))
 //         .then(() => ({ validLinks, brokenLinks })); // a qué corresponde esta sintaxis, que validLinks es un objeto?
 // };
-const validateLinks = (link, filename) => {
-    return axios.get(link.href)
-        .then(response => {
-            return {
-                ...link,
-                file: filename,
-                status: response.status,
-                ok: 'OK'
-            };
-        })
-        .catch(error => {
-            return {
-                ...link,
-                file: filename,
-                status: error.response.status,
-                ok: 'FAIL'
-            };
-        });
-};
+
+
+// Función para obtener estadísticas de links
+// const getStats = (links, brokenLinks) => {
+//     let totalLinks = links.length;
+//     let uniqueLinks = new Set(links.map(link => link.href)).size;
+//     // const brokenLinks = links.filter(link => link.ok === 'Fail').length;
+
+//     return {
+//         Total: totalLinks,
+//         Unique: uniqueLinks,
+//         Broken: brokenLinks.length
+//     };
+// };
 
 
 module.exports = {
@@ -143,8 +127,11 @@ module.exports = {
     checkExtension,
     readDirectory,
     extractLinks,
-    validateLinks
+    // validateLinks,
+    // getStats
 }
 
 // En este archivo van las funciones que se encargan de verificar las acciones
 
+// <<<<<<< DUDAS >>>>>>
+// *¿cuál es la diferencia entre URL y href?
