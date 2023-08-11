@@ -1,21 +1,24 @@
 const fs = require('fs');
 const path = require('path');
-// const axios = require('axios');
+const axios = require('axios');
 
 // Función para verificar si existe la ruta y convertir de relativa a absoluta
-// <<<<<< Mejorar manejo de errores >>>>>>>
-const checkPathAndConvert = (givenPath) => {
-    if (!fs.existsSync) {
-        throw new Error('Path does not exist.')
+const checkPathAndConvert = (givenPath) => { // BUGS
+    if (!fs.existsSync(givenPath)) {
+        return null; // La ruta no existe
     } else if (!path.isAbsolute(givenPath)) {
+        // console.log('buuugs', path.resolve(givenPath))
         console.log(path.resolve(givenPath));
     } else {
-        console.log('Path was already absolute.');
+        return givenPath;
     }
 };
 
+
+
 // Función para verificar si la ruta es un archivo o un directorio
 const checkPathType = (givenPath) => {
+    //console.log('aaaaa', fs.statSync(givenPath).isDirectory())
     if (fs.statSync(givenPath).isDirectory()) {
         return 'directory';
     } else if (fs.statSync(givenPath).isFile()) {
@@ -31,7 +34,6 @@ const checkExtension = (givenPath) => {
 };
 
 // Función para leer directorio y obtener archivos .md
-// <<<<<< Mejorar manejo de errores >>>>>>>
 const readDirectory = (dirPath) => {
     const dirContent = fs.readdirSync(dirPath);
 
@@ -43,17 +45,15 @@ const readDirectory = (dirPath) => {
         if (checkPathType(newDirPath) === 'directory') {
             files = files.concat(readDirectory(newDirPath));
         } else if (checkExtension(newDirPath)) {
-            files.push(newDirPath);
+            files.push(newDirPath); // push añade los links al final del array, devuelve nueva longitud del array
+        } else if (files.length === 0) {
+            throw new Error('No files found');
         }
-        // else if (files === 0) { // el error no funciona en caso de que no haya archivos dentro del dir
-        //     throw new Error('No files found');
-        // }
     });
     return files;
 };
 
 // Función para leer archivos .md y extraer links
-// <<<<<< Mejorar manejo de errores >>>>>>>
 const extractLinks = (givenPath) => {
     return new Promise((resolve, reject) => {
         fs.readFile(givenPath, 'utf8', (err, fileContent) => {
@@ -78,47 +78,47 @@ const extractLinks = (givenPath) => {
 };
 
 // Función para validar links
+function validateLinks(links) {
+    let promises = links.map(link => {
+        return axios.get(link.href) // ¿cuál es la diferencia entre URL, href, HTTP?
+            .then(function (response) {
+                return {
+                    ...link, // agrega las propiedades de link (href,text,file), crea un nuevo onjeto y copia todas las propiedades del objeto link en un nuevo objeto
+                    status: response.status, // response "representa la respuesta a una petición" fetch API ?
+                    ok: 'ok'
+                };
+            })
+            .catch(function (error) {
+                return {
+                    ...link,
+                    status: error.response ? error.response.status : 'No response',
+                    ok: 'fail'
+                };
+            });
+    });
 
-
-// const validateLinks = (links, filename) => {
-//     let validLinks = []; // para contener links validos y separarlos
-//     let brokenLinks = []; // para contener links rotos  y separarlos
-
-//     return Promise.all(links.map(link => { // recorrer y crear nuevo array de links
-//         return axios.get(link.href) // href representa el vínculo o enlace
-//             .then(response => { // response "representa la respuesta a una petición" fetch API ?
-//                 validLinks.push({ // push añade los links al final del array, devuelve nueva longitud del array
-//                     ...link, // agrega nuevos elementos al array y retorna nuevo array
-//                     file: filename,
-//                     status: response.status, // 200 por qué .status? como si ingresara al valor status
-//                     ok: 'OK'
-//                 });
-//             })
-//             .catch(error => { // cachar brokenLinks que serían el "error"
-//                 brokenLinks.push({
-//                     ...link, // estudiar si push y ... se complementan
-//                     file: filename,
-//                     status: error.response.status, // 404, interpreya por defecto que error es un 404 porque es href
-//                     ok: 'FAIL'
-//                 });
-//             });
-//     }))
-//         .then(() => ({ validLinks, brokenLinks })); // a qué corresponde esta sintaxis, que validLinks es un objeto?
-// };
-
+    return Promise.all(promises); // esperar a que las solucitudes HTTP se completen antes de devolver validLinks
+}
 
 // Función para obtener estadísticas de links
-// const getStats = (links, brokenLinks) => {
-//     let totalLinks = links.length;
-//     let uniqueLinks = new Set(links.map(link => link.href)).size;
-//     // const brokenLinks = links.filter(link => link.ok === 'Fail').length;
+function getStats(links) {
+    let total = links.length;
+    let unique = [...new Set(links.map(link => link.href))].length;
+    return {
+        Total: total,
+        Unique: unique
+    };
+}
 
-//     return {
-//         Total: totalLinks,
-//         Unique: uniqueLinks,
-//         Broken: brokenLinks.length
-//     };
-// };
+function getStatsAndValidate(links) {
+    let validLinks = validateLinks(links);
+    let stats = getStats(validLinks);
+    let broken = validLinks.filter(link => link.ok === 'fail').length;
+    return {
+        ...stats,
+        Broken: broken
+    };
+}
 
 
 module.exports = {
@@ -127,11 +127,13 @@ module.exports = {
     checkExtension,
     readDirectory,
     extractLinks,
-    // validateLinks,
-    // getStats
+    validateLinks,
+    getStats,
+    getStatsAndValidate
 }
+
 
 // En este archivo van las funciones que se encargan de verificar las acciones
 
-// <<<<<<< DUDAS >>>>>>
-// *¿cuál es la diferencia entre URL y href?
+
+
