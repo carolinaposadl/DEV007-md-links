@@ -15,7 +15,6 @@ const checkPathAndConvert = (givenPath) => { // BUGS
 };
 
 
-
 // Función para verificar si la ruta es un archivo o un directorio
 const checkPathType = (givenPath) => {
     //console.log('aaaaa', fs.statSync(givenPath).isDirectory())
@@ -91,7 +90,7 @@ function validateLinks(links) {
             .catch(function (error) {
                 return {
                     ...link,
-                    status: error.response ? error.response.status : 'No response',
+                    status: error.response ? error.response.status : '404', // 404??? o mejor No response??
                     ok: 'fail'
                 };
             });
@@ -101,23 +100,75 @@ function validateLinks(links) {
 }
 
 // Función para obtener estadísticas de links
+// function getStats(links) {
+//     let total = links.length;
+//     let unique = [...new Set(links.map(link => link.href))].length;
+//     return {
+//         Total: total,
+//         Unique: unique
+//     };
+// }
+
 function getStats(links) {
+    if (!Array.isArray(links)) {
+        return {
+            Total: 0,
+            Unique: 0
+        };
+    }
+
     let total = links.length;
-    let unique = [...new Set(links.map(link => link.href))].length;
+    let uniqueLinks = new Set();
+
+    for (let i = 0; i < links.length; i++) {
+        uniqueLinks.add(links[i].href);
+    }
+
     return {
         Total: total,
-        Unique: unique
+        Unique: uniqueLinks.size
     };
 }
 
+
+// function getStatsAndValidate(links) {
+//     let validLinks = validateLinks(links);
+//     let stats = getStats(validLinks);
+//     let broken = validLinks.filter(link => link.ok === 'fail').length;
+//     return {
+//         ...stats,
+//         Broken: broken
+//     };
+// }
+
 function getStatsAndValidate(links) {
-    let validLinks = validateLinks(links);
-    let stats = getStats(validLinks);
-    let broken = validLinks.filter(link => link.ok === 'fail').length;
-    return {
-        ...stats,
-        Broken: broken
-    };
+    // Primero asegurémonos de que los links sean un array
+    if (!Array.isArray(links)) {
+        return Promise.resolve({
+            Total: 0,
+            Unique: 0,
+            Broken: 0
+        });
+    }
+
+    // Usaremos .then() para manejar la promesa
+    return validateLinks(links).then(validLinks => {
+        if (!Array.isArray(validLinks)) {
+            return {
+                Total: 0,
+                Unique: 0,
+                Broken: 0
+            };
+        }
+
+        let stats = getStats(validLinks);
+        let broken = validLinks.filter(link => link.ok === 'fail').length;
+
+        return {
+            ...stats,
+            Broken: broken,
+        };
+    });
 }
 
 
