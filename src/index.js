@@ -14,8 +14,9 @@ const mdLinks = (givenPath) => {
             const absolutePath = checkPathAndConvert(givenPath);
             // console.log('debugger', checkPathAndConvert(givenPath))
             if (absolutePath === null) {
+                console.log('Path does not exist.');
                 reject(new Error('Path does not exist.')); // BUGS
-                return; // terminar la ejecución de la función para que no se ejecuten más instrucciones, después de rechazada la promesa.
+                process.exit(0); // terminar la ejecución de la función para que no se ejecuten más instrucciones, después de rechazada la promesa.
             }
 
             // Verificar si la ruta es un archivo o un directorio
