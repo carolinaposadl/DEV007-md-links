@@ -37,6 +37,14 @@ describe('checkPathAndConvert', () => {
 });
 
 
+
+
+
+
+
+
+
+
 describe(checkPathType, () => {
   it('should be a function', () => {
     expect(typeof checkPathAndConvert).toBe('function');
