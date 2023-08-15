@@ -1,5 +1,5 @@
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
 const axios = require('axios');
 
 // Función para verificar si existe la ruta y convertir de relativa a absoluta
@@ -7,8 +7,9 @@ const checkPathAndConvert = (givenPath) => {
     if (!fs.existsSync(givenPath)) {
         return null; // La ruta no existe
     } else if (!path.isAbsolute(givenPath)) {
-        // console.log('bugs', path.resolve(givenPath))
-        console.log(path.resolve(givenPath));
+        const absolutePath = path.resolve(givenPath); // Retornar la ruta resuelta si es relativa
+        console.log(`Absolute path: ${absolutePath}`); // Imprimir la ruta convertida a absoluta
+        return absolutePath;
     } else {
         return givenPath;
     }

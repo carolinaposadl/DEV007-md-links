@@ -4,8 +4,7 @@
 
 * [1. Preámbulo](#1-preámbulo)
 * [2. Diagrama de flujo](#2-diagrama-de-flujo)
-* [3. Documentación técnica](#3-documentación-técnica)
-* [4. Guía de uso e instalación](#4-guía-de-uso-e-instalación)
+* [3. Documentación técnica y guía de uso](#3-documentación-técnica-y-guía-de-uso)
 
 ***
 
@@ -26,7 +25,7 @@ Este proyecta crea una herramienta de línea de comando (CLI) usando [Node.js](h
 [Diagrama de flujo](https://www.figma.com/file/jcGbFuEeejZz5PeW0Se54u/md-links?type=whiteboard&node-id=0%3A1&t=CGkY9yP0F95UuO9Y-1)
 
 
-## 3. Documentación técnica
+## 3. Documentación técnica y guía de uso
 
 ## Este proyecto consta de DOS partes
 
@@ -130,7 +129,7 @@ Unique: 3
 Broken: 1
 ```
 
-## 4. Guía de uso e instalación
+
 
 
 
