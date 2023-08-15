@@ -3,11 +3,11 @@ const path = require('path');
 const axios = require('axios');
 
 // Función para verificar si existe la ruta y convertir de relativa a absoluta
-const checkPathAndConvert = (givenPath) => { // BUGS
+const checkPathAndConvert = (givenPath) => {
     if (!fs.existsSync(givenPath)) {
         return null; // La ruta no existe
     } else if (!path.isAbsolute(givenPath)) {
-        // console.log('buuugs', path.resolve(givenPath))
+        // console.log('bugs', path.resolve(givenPath))
         console.log(path.resolve(givenPath));
     } else {
         return givenPath;
@@ -27,7 +27,7 @@ const checkPathType = (givenPath) => {
     }
 };
 
-// Función para verificar si la ruta es un archivo .md
+// Función para verificar si el archivo es .md
 const checkExtension = (givenPath) => {
     return path.extname(givenPath) === '.md';
 };
@@ -99,16 +99,7 @@ function validateLinks(links) {
     return Promise.all(promises); // esperar a que las solucitudes HTTP se completen antes de devolver validLinks
 }
 
-// Función para obtener estadísticas de links
-// function getStats(links) {
-//     let total = links.length;
-//     let unique = [...new Set(links.map(link => link.href))].length;
-//     return {
-//         Total: total,
-//         Unique: unique
-//     };
-// }
-
+// Función para obtener estadísticas de los links
 function getStats(links) {
     if (!Array.isArray(links)) {
         return {
@@ -130,19 +121,9 @@ function getStats(links) {
     };
 }
 
-
-// function getStatsAndValidate(links) {
-//     let validLinks = validateLinks(links);
-//     let stats = getStats(validLinks);
-//     let broken = validLinks.filter(link => link.ok === 'fail').length;
-//     return {
-//         ...stats,
-//         Broken: broken
-//     };
-// }
-
+// Función para obtener estadísticas de la validación de los links
 function getStatsAndValidate(links) {
-    // Primero asegurémonos de que los links sean un array
+    // Primero aseguramos que los links sean un array
     if (!Array.isArray(links)) {
         return Promise.resolve({
             Total: 0,
@@ -151,7 +132,6 @@ function getStatsAndValidate(links) {
         });
     }
 
-    // Usaremos .then() para manejar la promesa
     return validateLinks(links).then(validLinks => {
         if (!Array.isArray(validLinks)) {
             return {
@@ -183,8 +163,6 @@ module.exports = {
     getStatsAndValidate
 }
 
-
-// En este archivo van las funciones que se encargan de verificar las acciones
 
 
 

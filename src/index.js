@@ -60,8 +60,3 @@ const mdLinks = (givenPath) => {
 module.exports = {
     mdLinks
 }
-
-// Notas
-// promise.all
-// Without Promise.all, the code would not wait for the promises to resolve, and the links would not be collected properly.
-// By using Promise.all, we ensure that all the promises are resolved before executing the subsequent code.
