@@ -9,6 +9,21 @@ const {
   getStatsAndValidate
 } = require('../src/functions.js');
 
+const { mdLinks } = require('../src/index.js');
+
+describe('mdLinks', () => {
+  test('should return a promise', () => {
+    const path = './example-directory';
+    const result = mdLinks(path);
+    expect(result).toBeInstanceOf(Promise); // Para verificar que el valor devuelto sea una instancia de clase "Promise"
+  });
+  // it('should reject the promise when an invalid path or non md file is provided', () => {
+  //   const invalidPath = '/invalid/path.txt';
+
+  //   return expect(mdLinks(invalidPath)).rejects.toThrow(Error);
+  // });
+});
+
 // Test verificar si la ruta existe y convertir a absoluta
 describe('checkPathAndConvert', () => {
   it('should return null if path does not exist', () => {
@@ -23,7 +38,6 @@ describe('checkPathAndConvert', () => {
     expect(absolutePath).toBe(expectedAbsolutePath);
   });
 });
-
 
 // Test verificar tipo de ruta (archivo o directorio)
 describe('checkPathType', () => {
@@ -86,46 +100,70 @@ describe(readDirectory, () => {
     expect(result).toEqual(expectedArray);
   });
 
-  // ESTE ARROJA UN ERROR
   it('should throw an error if no files are found', () => {
     const dirPath = './example-empty-dir';
     expect(() => {
       readDirectory(dirPath);
     }).toThrow();
   });
+
+  // it('should throw an error if no files are found', () => {
+  //   const dirPath = './example-empty-dir';
+  //   expect(() => readDirectory(dirPath)).toThrow('No files found');
+  // });
+
 });
 
+// Test para leer archivos .md y extraer links - PRUEBAS ASÍNCRONAS
+jest.mock('axios');
 
-//   it('should throw an error if no files are found', () => {
-//     const dirPath = './empty-directory';
-//     expect(() => readDirectory(dirPath)).toThrow('No files found');
-//   });
-// })
-
-
-// it('should throw an error when given path is neither a file nor a directory', () => {
-//   const invalidPath = './non-existent-path';
-//   expect(() => {
-//     checkPathType(invalidPath);
-//   }).toThrow();
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-describe(extractLinks, () => {
+describe('extractLinks', () => {
   it('should be a function', () => {
     expect(typeof extractLinks).toBe('function');
   });
+  // Implementación personalizada de fs.readFile
+  const mockReadFile = jest.fn((path, encoding, callback) => {
+    const fileContent = `[Example](https://www.example.com)\n[Google](https://www.google.com)`;
+    callback(null, fileContent);
+  });
+
+  beforeAll(() => {
+    // Mock fs módulo y reemplazar fs.readFile con la implementación personalizada
+    jest.mock('fs', () => ({
+      readFile: mockReadFile,
+    }));
+  });
+
+  test('should correctly save the links in an array', () => {
+    const path = './example-directory-1/mock-file.md';
+
+    return extractLinks(path).then((links) => {
+      expect(Array.isArray(links)).toBe(true);
+      expect(links).toHaveLength(2);
+      expect(links[0]).toEqual({ href: 'https://www.example.com', text: 'Example', file: path });
+      expect(links[1]).toEqual({ href: 'https://www.google.com', text: 'Google', file: path });
+    });
+  });
+
+  test('should correctly extract the links from the file content', () => {
+    const path = './example-directory-1/mock-file.md';
+
+    return extractLinks(path).then((links) => {
+      expect(links).toEqual([
+        { href: 'https://www.example.com', text: 'Example', file: path },
+        { href: 'https://www.google.com', text: 'Google', file: path },
+      ]);
+    });
+  });
 });
+
+// 1. Se define una implementación personalizada de fs.readFile llamada mockReadFile. 
+// Esta implementación se utiliza para simular la lectura de un archivo y devuelve un contenido de archivo específico.
+// 2. Antes de ejecutar los tests, se utiliza beforeAll para reemplazar la implementación real de fs.readFile 
+// con la implementación personalizada mockReadFile. 
+// Esto se hace utilizando jest.mock para simular el módulo fs y reemplazar la función readFile con mockReadFile.
+// 3. A continuación, se definen los tests individuales dentro de test. 
+// Cada test verifica un aspecto específico de la función extractLinks.
 
 describe(validateLinks, () => {
   it('should be a function', () => {

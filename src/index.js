@@ -29,7 +29,8 @@ const mdLinks = (givenPath) => {
             } else if (pathType === 'file' && checkExtension(givenPath)) { // no entiendo por qué vsc entiende 'file'
                 mdFiles.push(givenPath);
             } else {
-                throw new Error('File must be a Markdown file.');// no entiendo throw new Error
+                //throw new Error('File must be a Markdown file.');
+                console.log('File must be a Markdown file.');
             }
 
             // extractLinks() es llamado para cada archivo del array de mdFiles

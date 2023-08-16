@@ -46,12 +46,17 @@ const readDirectory = (dirPath) => {
             files = files.concat(readDirectory(newDirPath));
         } else if (checkExtension(newDirPath)) {
             files.push(newDirPath); // push añade los links al final del array, devuelve nueva longitud del array
-        } else if (files.length === 0) {
-            throw new Error('No files found');
         }
     });
+
+    if (files.length === 0) { // fuera del forEach para que se ejecute incluso si el directorio está vacío y así identifique el error
+        throw new Error('No files found');
+        //console.log('No files found');
+    }
+
     return files;
 };
+
 
 // Función para leer archivos .md y extraer links
 const extractLinks = (givenPath) => {
