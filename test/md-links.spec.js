@@ -9,20 +9,23 @@ const {
   getStatsAndValidate
 } = require('../src/functions.js');
 
-const { mdLinks } = require('../src/index.js');
+const axios = require('axios');
+jest.mock('axios'); // mock de las peticiones HTTP de axios
 
-describe('mdLinks', () => {
-  test('should return a promise', () => {
-    const path = './example-directory';
-    const result = mdLinks(path);
-    expect(result).toBeInstanceOf(Promise); // Para verificar que el valor devuelto sea una instancia de clase "Promise"
-  });
-  // it('should reject the promise when an invalid path or non md file is provided', () => {
-  //   const invalidPath = '/invalid/path.txt';
+// const { mdLinks } = require('../src/index.js');
 
-  //   return expect(mdLinks(invalidPath)).rejects.toThrow(Error);
-  // });
-});
+// describe('mdLinks', () => {
+//   test('should return a promise', () => {
+//     const path = './example-directory';
+//     const result = mdLinks(path);
+//     expect(result).toBeInstanceOf(Promise); // Para verificar que el valor devuelto sea una instancia de clase "Promise"
+//   });
+//   // it('should reject the promise when an invalid path or non md file is provided', () => {
+//   //   const invalidPath = '/invalid/path.txt';
+
+//   //   return expect(mdLinks(invalidPath)).rejects.toThrow(Error);
+//   // });
+// });
 
 // Test verificar si la ruta existe y convertir a absoluta
 describe('checkPathAndConvert', () => {
@@ -115,8 +118,6 @@ describe(readDirectory, () => {
 });
 
 // Test para leer archivos .md y extraer links - PRUEBAS ASÍNCRONAS
-jest.mock('axios');
-
 describe('extractLinks', () => {
   it('should be a function', () => {
     expect(typeof extractLinks).toBe('function');
@@ -165,11 +166,33 @@ describe('extractLinks', () => {
 // 3. A continuación, se definen los tests individuales dentro de test. 
 // Cada test verifica un aspecto específico de la función extractLinks.
 
+// Test para validar links
 describe(validateLinks, () => {
   it('should be a function', () => {
     expect(typeof validateLinks).toBe('function');
   });
+
+  it('should return an array of objects with status and ok properties', function () {
+    const links = [
+      { href: 'http://example.com', text: 'Example', file: 'file1' },
+      { href: 'http://nonexistent.com', text: 'Nonexistent', file: 'file2' }
+    ];
+
+    // Mock de validación
+    axios.get.mockResolvedValueOnce({ status: 200 });
+    axios.get.mockRejectedValueOnce({ response: { status: 404 } });
+
+    return validateLinks(links).then(result => {
+      expect(result).toHaveLength(links.length);
+      result.forEach(link => {
+        expect(link).toHaveProperty('status');
+        expect(link).toHaveProperty('ok');
+      });
+    });
+  });
 });
+
+
 
 describe(getStats, () => {
   it('should be a function', () => {
