@@ -2,9 +2,6 @@
 const { mdLinks } = require('./src/index.js');
 const { validateLinks, getStats, getStatsAndValidate } = require('./src/functions.js');
 
-// const { mdLinks } = require('./index');
-// const { validateLinks, getStats, getStatsAndValidate } = require('./functions.js');
-
 let filePath = process.argv[2]; // para obtener los argumentos que pasemos por node.js
 let options = process.argv.slice(3);
 

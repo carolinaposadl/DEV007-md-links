@@ -12,21 +12,6 @@ const {
 const axios = require('axios');
 jest.mock('axios'); // mock de las peticiones HTTP de axios
 
-// const { mdLinks } = require('../src/index.js');
-
-// describe('mdLinks', () => {
-//   test('should return a promise', () => {
-//     const path = './example-directory';
-//     const result = mdLinks(path);
-//     expect(result).toBeInstanceOf(Promise); // Para verificar que el valor devuelto sea una instancia de clase "Promise"
-//   });
-//   // it('should reject the promise when an invalid path or non md file is provided', () => {
-//   //   const invalidPath = '/invalid/path.txt';
-
-//   //   return expect(mdLinks(invalidPath)).rejects.toThrow(Error);
-//   // });
-// });
-
 // Test verificar si la ruta existe y convertir a absoluta
 describe('checkPathAndConvert', () => {
   it('should return null if path does not exist', () => {
@@ -192,13 +177,22 @@ describe(validateLinks, () => {
   });
 });
 
-
-
+// Test para obtener estadísticas de los links
 describe(getStats, () => {
   it('should be a function', () => {
     expect(typeof getStats).toBe('function');
   });
+  it('should return total and unique counts of links', () => {
+    const links = [
+      { href: 'http://example.com' },
+      { href: 'http://example.com' },
+      { href: 'http://another-example.com' },
+    ];
+    const result = getStats(links);
+    expect(result).toEqual({ Total: 3, Unique: 2 });
+  });
 });
+
 
 describe(getStatsAndValidate, () => {
   it('should be a function', () => {
