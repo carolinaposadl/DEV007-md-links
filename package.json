@@ -2,7 +2,7 @@
   "name": "md-links-carolinaposadl",
   "author": "Carolina Posada",
   "version": "0.1.0",
-  "type": "module",
+  "type": "commonjs",
   "engines": {
     "node": ">=16.x"
   },
