@@ -94,12 +94,6 @@ describe(readDirectory, () => {
       readDirectory(dirPath);
     }).toThrow();
   });
-
-  // it('should throw an error if no files are found', () => {
-  //   const dirPath = './example-empty-dir';
-  //   expect(() => readDirectory(dirPath)).toThrow('No files found');
-  // });
-
 });
 
 // Test para leer archivos .md y extraer links - PRUEBAS ASÍNCRONAS

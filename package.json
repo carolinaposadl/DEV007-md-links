@@ -1,7 +1,8 @@
 {
-  "name": "md-links",
-  "author": "Carolina",
-  "version": "0.1.0",
+  "name": "md-links-carolinaposadl",
+  "author": "Carolina Posada",
+  "version": "0.1.1",
+  "type": "module",
   "engines": {
     "node": ">=16.x"
   },

@@ -85,10 +85,10 @@ const extractLinks = (givenPath) => {
 // Función para validar links
 function validateLinks(links) {
     let promises = links.map(link => {
-        return axios.get(link.href) // ¿cuál es la diferencia entre URL, href, HTTP?
+        return axios.get(link.href)
             .then(function (response) {
                 return {
-                    ...link, // agrega las propiedades de link (href,text,file), crea un nuevo onjeto y copia todas las propiedades del objeto link en un nuevo objeto
+                    ...link, // spread syntax, agrega las propiedades de link (href,text,file), crea un nuevo onjeto y copia todas las propiedades del objeto link en un nuevo objeto
                     status: response.status, // response "representa la respuesta a una petición" fetch API ?
                     ok: 'ok'
                 };
@@ -96,7 +96,7 @@ function validateLinks(links) {
             .catch(function (error) {
                 return {
                     ...link,
-                    status: error.response ? error.response.status : '404', // 404??? o mejor No response??
+                    status: error.response ? error.response.status : '404', //  No response
                     ok: 'fail'
                 };
             });
