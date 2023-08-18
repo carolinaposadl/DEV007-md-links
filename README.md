@@ -27,7 +27,10 @@ Este proyecta crea una herramienta de línea de comando (CLI) usando [Node.js](h
 
 ## 3. Documentación técnica y guía de uso
 
-## Este proyecto consta de DOS partes
+### Instalación
+`npm i md-links-carolinaposadl`
+
+### Este proyecto consta de DOS partes
 
 ### 1) JavaScript API
 
@@ -128,6 +131,7 @@ Total: 3
 Unique: 3
 Broken: 1
 ```
+
 
 
 
