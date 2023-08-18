@@ -66,8 +66,10 @@ const extractLinks = (givenPath) => {
                 reject(err);
             } else {
                 const linksRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-                let match;
+                let match; // statement, guarda el resultado de 
                 const links = [];
+
+                // exec busca todas las coincidencias en el archivo de linksRegex y lo devuelve en un array
 
                 while ((match = linksRegex.exec(fileContent)) !== null) {
                     links.push({

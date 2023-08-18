@@ -19,7 +19,7 @@ const mdLinks = (givenPath) => {
             }
 
             // Verificar si la ruta es un archivo o un directorio
-            let mdFiles = []; // Array que contiene las rutas los archivos .md de directorios o archivos solitarios.
+            let mdFiles = []; // Array que contiene las rutas de los archivos .md de directorios o archivos solitarios.
 
             const pathType = checkPathType(givenPath);
 
@@ -44,12 +44,12 @@ const mdLinks = (givenPath) => {
             Promise.all(promises)
 
                 .then(allLinks => { // consumo de promesa
-                    // resolve, se devuelven los links devolver los links
+                    // resolve, se devuelven los links 
                     resolve(allLinks.flat()); // flat es para crear un solo array que contenga todos los array como objetos 
                 })
 
         } catch (error) {
-            reject(error); // propagar cualquier error que ocurra dentro de la promesa, capturar y manejar errores de mdLinks
+            reject(error); // capturar y manejar errores de mdLinks
         }
 
     });
